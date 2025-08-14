@@ -1,5 +1,4 @@
 function Navbar() {
-  return <div>Navbar</div>;
+  return <div>This is Navbar component.</div>;
 }
-
 export default Navbar;
