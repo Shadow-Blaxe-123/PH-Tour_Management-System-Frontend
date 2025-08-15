@@ -1,3 +1,4 @@
-export default function About() {
-  return <div>About</div>;
+function About() {
+  return <div>This is About component.</div>;
 }
+export default About;
