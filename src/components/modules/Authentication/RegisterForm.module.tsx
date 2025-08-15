@@ -14,6 +14,7 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Password from "@/components/ui/password";
 
 const registerSchema = z.object({
   name: z
@@ -93,7 +94,7 @@ export function RegisterForm({
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="********" {...field} type="password" />
+                    <Password {...field} />
                   </FormControl>
                   <FormDescription className="sr-only">
                     This is your password.
@@ -109,7 +110,7 @@ export function RegisterForm({
                 <FormItem>
                   <FormLabel>Confirm Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="********" {...field} type="password" />
+                    <Password {...field} />
                   </FormControl>
                   <FormDescription className="sr-only">
                     This is to confirm your password.
