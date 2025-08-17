@@ -22,6 +22,7 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { cn } from "@/lib/utils";
 import {
   useSendOtpMutation,
   useVerifyOtpMutation,
@@ -46,6 +47,7 @@ function Verify() {
   const [email] = useState(location.state);
   const [sendOtp] = useSendOtpMutation();
   const [verifyOtp] = useVerifyOtpMutation();
+  const [timer, setTimer] = useState(10);
   useEffect(() => {
     if (!email) {
       navigate("/");
@@ -71,18 +73,30 @@ function Verify() {
       console.log(error);
     }
   };
-  const handleConfirm = async () => {
+  const handleSendOtp = async () => {
     const toastId = toast.loading("Sending OTP...");
+    setConfirmed(true);
+    setTimer(10);
     try {
       const res = await sendOtp({ email: email }).unwrap();
       if (res.success) {
-        setConfirmed(true);
         toast.success(res.message, { id: toastId });
       }
     } catch (err) {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    if (!email || !confirmed) {
+      return;
+    }
+    const timerId = setInterval(() => {
+      setTimer((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timerId);
+  }, [email, confirmed]);
+
   return (
     <div className="grid place-content-center h-screen">
       {confirmed ? (
@@ -135,7 +149,19 @@ function Verify() {
                         </InputOTP>
                       </FormControl>
                       <FormDescription>
-                        Please enter the one-time password sent to your phone.
+                        <Button
+                          type="button"
+                          onClick={handleSendOtp}
+                          variant={"link"}
+                          disabled={timer !== 0}
+                          className={cn("p-0 m-0", {
+                            "text-muted-foreground": timer !== 0,
+                            "cursor-pointer": timer === 0,
+                          })}
+                        >
+                          Resend OTP:
+                        </Button>{" "}
+                        {timer}
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -160,7 +186,7 @@ function Verify() {
             </CardDescription>
           </CardHeader>
           <CardFooter className="flex justify-end">
-            <Button className="w-[300px]" onClick={handleConfirm}>
+            <Button className="w-[300px]" onClick={handleSendOtp}>
               Confirm
             </Button>
           </CardFooter>
