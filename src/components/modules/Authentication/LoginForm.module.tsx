@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
   Form,
   FormControl,
@@ -24,6 +24,7 @@ export function LoginForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [login] = useLoginMutation();
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -32,17 +33,23 @@ export function LoginForm({
     },
   });
 
-  const onSubmit = (data: z.infer<typeof loginSchema>) => {
+  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     const loginInfo = {
       email: data.email,
       password: data.password,
     };
     try {
-      const response = login(loginInfo).unwrap();
+      const response = await login(loginInfo).unwrap();
       console.log(response);
       toast.success("Login successful!");
-    } catch (error) {
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
       console.error(error);
+      if (error.status === 401) {
+        toast.error("Your account is not verified!");
+        navigate("/verify");
+      }
     }
   };
   return (

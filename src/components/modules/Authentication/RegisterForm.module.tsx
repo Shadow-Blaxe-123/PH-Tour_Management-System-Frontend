@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
   Form,
   FormControl,
@@ -24,6 +24,7 @@ export function RegisterForm({
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [register] = useRegisterMutation();
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -44,6 +45,7 @@ export function RegisterForm({
       const response = await register(userInfo).unwrap();
       console.log(response);
       toast.success("Registration successful!");
+      navigate("/verify");
     } catch (error) {
       console.error(error);
     }
