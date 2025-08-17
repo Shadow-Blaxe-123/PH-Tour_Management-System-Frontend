@@ -1,6 +1,6 @@
 import z from "zod";
 
-const registerSchema = z
+export const registerSchema = z
   .object({
     name: z
       .string()
@@ -15,4 +15,7 @@ const registerSchema = z
     path: ["confirmPassword"],
   });
 
-export default registerSchema;
+export const loginSchema = z.object({
+  email: z.email(),
+  password: z.string().min(8, { error: "Password is too short" }),
+});
