@@ -18,6 +18,7 @@ import Password from "@/components/ui/password";
 import { useRegisterMutation } from "@/redux/features/auth/auth.api";
 import { toast } from "sonner";
 import { registerSchema } from "./authSchema";
+import config from "@/config";
 
 export function RegisterForm({
   className,
@@ -137,7 +138,13 @@ export function RegisterForm({
             Or continue with
           </span>
         </div>
-        <Button variant="outline" className="w-full">
+        <Button
+          variant="outline"
+          className="w-full"
+          onClick={() => {
+            window.open(`${config.baseUrl}/auth/google`);
+          }}
+        >
           Register with Google
         </Button>
       </div>
