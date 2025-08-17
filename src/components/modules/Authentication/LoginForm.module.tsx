@@ -43,6 +43,7 @@ export function LoginForm({
       const response = await login(loginInfo).unwrap();
       console.log(response);
       toast.success("Login successful!");
+      navigate("/");
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -101,7 +102,7 @@ export function LoginForm({
             />
 
             <Button type="submit" className="w-full">
-              Submit
+              Log in
             </Button>
           </form>
         </Form>

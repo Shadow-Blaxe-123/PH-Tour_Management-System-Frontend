@@ -9,7 +9,7 @@ import type {
   LoginResData,
 } from "@/types";
 
-const authApi = baseApi.injectEndpoints({
+export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<IResponse<LoginResData>, ILogin>({
       query: (userInfo) => ({
@@ -17,6 +17,13 @@ const authApi = baseApi.injectEndpoints({
         method: "POST",
         data: userInfo,
       }),
+    }),
+    logout: builder.mutation<IResponse<null>, null>({
+      query: () => ({
+        url: "/auth/logout",
+        method: "POST",
+      }),
+      invalidatesTags: ["User"],
     }),
     register: builder.mutation<IResponse<CreateResData>, IRegister>({
       query: (userInfo) => ({
@@ -44,6 +51,7 @@ const authApi = baseApi.injectEndpoints({
         url: "/user/me",
         method: "GET",
       }),
+      providesTags: ["User"],
     }),
   }),
 });
@@ -54,4 +62,5 @@ export const {
   useSendOtpMutation,
   useVerifyOtpMutation,
   useUserInfoQuery,
+  useLogoutMutation,
 } = authApi;
