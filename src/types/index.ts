@@ -1,3 +1,5 @@
+import type { ComponentType } from "react";
+
 export type {
   ISendOtp,
   ILogin,
@@ -12,4 +14,13 @@ export interface IResponse<T> {
   success: boolean;
   message: string;
   data: T;
+}
+
+export interface ISideBarItems {
+  title: string;
+  items: {
+    title: string;
+    url: string;
+    component: ComponentType;
+  }[];
 }

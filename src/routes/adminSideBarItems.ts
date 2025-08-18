@@ -1,11 +1,11 @@
 import AddTour from "@/pages/Admin/AddTour";
 import AddTourType from "@/pages/Admin/AddTourType";
 import Analytics from "@/pages/Admin/Analytics";
+import type { ISideBarItems } from "@/types";
 
-export const adminSideBarItems = [
+export const adminSideBarItems: ISideBarItems[] = [
   {
     title: "Dashboard",
-    url: "#",
     items: [
       {
         title: "Analytics",
@@ -16,7 +16,6 @@ export const adminSideBarItems = [
   },
   {
     title: "Tour Management",
-    url: "#",
     items: [
       {
         title: "Add Tour",
