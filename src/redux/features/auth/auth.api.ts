@@ -8,6 +8,7 @@ import type {
   IVerifyOtp,
   LoginResData,
 } from "@/types";
+import type { IUser } from "@/types/user.types";
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -46,7 +47,7 @@ export const authApi = baseApi.injectEndpoints({
         data: userInfo,
       }),
     }),
-    userInfo: builder.query({
+    userInfo: builder.query<IResponse<IUser>, null>({
       query: () => ({
         url: "/user/me",
         method: "GET",
