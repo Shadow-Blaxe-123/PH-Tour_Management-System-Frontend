@@ -7,7 +7,7 @@ export const tourApi = baseApi.injectEndpoints({
       query: (data) => ({
         url: "/tour/create-tour-type",
         method: "POST",
-        body: data,
+        data: data,
       }),
     }),
     getTourTypes: builder.query({
