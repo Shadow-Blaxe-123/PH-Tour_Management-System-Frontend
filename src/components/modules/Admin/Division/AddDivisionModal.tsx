@@ -25,6 +25,7 @@ import type z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import divisionZodSchema from "./divisionSchema";
 import { Textarea } from "@/components/ui/textarea";
+import SingleImageUploader from "@/components/SingleImageUploader";
 
 function AddDivisionModal() {
   const form = useForm<z.infer<typeof divisionZodSchema>>({
@@ -91,6 +92,7 @@ function AddDivisionModal() {
               )}
             />
           </form>
+          <SingleImageUploader />
         </Form>
         <DialogDescription>Create a division</DialogDescription>
         <DialogFooter>
