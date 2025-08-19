@@ -87,9 +87,11 @@ function AddTourTypeModal() {
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
-            <Button type="submit" form="add-tour-type">
-              Save
-            </Button>
+            <DialogClose asChild>
+              <Button type="submit" form="add-tour-type">
+                Save
+              </Button>
+            </DialogClose>
           </DialogFooter>
         </DialogContent>
       </form>
