@@ -9,6 +9,8 @@ export type {
   IVerifyOtp,
 } from "@/types/auth.types";
 
+export type { ITourType } from "@/types/tour.types";
+
 export interface IResponse<T> {
   statusCode: number;
   success: boolean;
