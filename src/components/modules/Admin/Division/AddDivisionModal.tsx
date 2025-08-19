@@ -26,30 +26,36 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import divisionZodSchema from "./divisionSchema";
 import { Textarea } from "@/components/ui/textarea";
 import SingleImageUploader from "@/components/SingleImageUploader";
+import { useState } from "react";
+import { useAddDivisionMutation } from "@/redux/features/division/division.api";
 
 function AddDivisionModal() {
+  const [open, setOpen] = useState(false);
+  const [image, setImage] = useState<File | null>(null);
+  const [addDivision] = useAddDivisionMutation();
   const form = useForm<z.infer<typeof divisionZodSchema>>({
     resolver: zodResolver(divisionZodSchema),
     defaultValues: { name: "", description: "" },
   });
 
   const onSubmit = async (data: z.infer<typeof divisionZodSchema>) => {
-    const payload = { name: data.name };
-    console.log(payload);
-    // try {
-    //   const res = await AddTourType(payload).unwrap();
-    //   if (res.success) {
-    //     toast.success(res.message);
-    //   }
-    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // } catch (error: any) {
-    //   console.log(error);
-    //   toast.error(error.data.message);
-    // }
+    const toastId = toast.loading("Adding Division...");
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(data));
+    formData.append("file", image as File);
+    try {
+      const res = await addDivision(formData).unwrap();
+      if (res.success) {
+        setOpen(false);
+        toast.success(res.message, { id: toastId });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>Add Division</Button>
       </DialogTrigger>
@@ -92,18 +98,16 @@ function AddDivisionModal() {
               )}
             />
           </form>
-          <SingleImageUploader />
+          <SingleImageUploader onChange={setImage} />
         </Form>
         <DialogDescription>Create a division</DialogDescription>
         <DialogFooter>
           <DialogClose asChild>
             <Button variant="outline">Cancel</Button>
           </DialogClose>
-          <DialogClose asChild>
-            <Button type="submit" form="add-tour-type">
-              Save
-            </Button>
-          </DialogClose>
+          <Button type="submit" form="add-tour-type">
+            Save
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
