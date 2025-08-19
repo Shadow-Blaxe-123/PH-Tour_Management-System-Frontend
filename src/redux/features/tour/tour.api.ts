@@ -10,10 +10,14 @@ export const tourApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
-    getTourTypes: builder.query<IResponse<ITourType>, null>({
+    getTourTypes: builder.query({
       query: () => ({
         url: "/tour/tour-types",
         method: "GET",
+      }),
+      transformResponse: (response: IResponse<ITourType[]>) => ({
+        data: response.data,
+        meta: response.meta,
       }),
     }),
   }),
