@@ -33,12 +33,20 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
-import { useGetTourTypesQuery } from "@/redux/features/tour/tour.api";
+import {
+  useAddTourMutation,
+  useGetTourTypesQuery,
+} from "@/redux/features/tour/tour.api";
 import { CalendarIcon } from "lucide-react";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
 import { format, formatISO } from "date-fns";
+import MultipleImageUploader from "@/components/MultipleImageUploader";
+import { useState } from "react";
+import type { FileMetadata } from "@/hooks/use-file-upload";
 
 function AddTour() {
+  const [images, setImages] = useState<(File | FileMetadata)[] | []>([]);
+  const [addTour] = useAddTourMutation();
   const { data: tourTypeData, isLoading: tourTypeLoading } =
     useGetTourTypesQuery(undefined);
   const { data: divisionData, isLoading: divisionLoading } =
@@ -67,8 +75,17 @@ function AddTour() {
       startDate: formatISO(data.startDate),
       endDate: formatISO(data.endDate),
     };
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(tourData));
+    images.forEach((image) => formData.append("files", image as File));
     console.log(tourData);
     console.log(data);
+    try {
+      const res = await addTour(formData).unwrap();
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className="w-full max-w-4xl mx-auto px-5 mt-16 flex justify-center">
@@ -262,15 +279,15 @@ function AddTour() {
                   )}
                 />
               </div>
-              <div className="w-full">
+              <div className="flex gap-5 items-stretch">
                 <FormField
                   control={form.control}
                   name="title"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex-1">
                       <FormLabel>Description</FormLabel>
                       <FormControl>
-                        <Textarea {...field} />
+                        <Textarea {...field} className="h-[250px]" />
                       </FormControl>
                       <FormDescription className="sr-only">
                         This is your title.
@@ -279,6 +296,9 @@ function AddTour() {
                     </FormItem>
                   )}
                 />
+                <div className="flex-1 mt-6">
+                  <MultipleImageUploader onChange={setImages} />
+                </div>
               </div>
             </form>
           </Form>
