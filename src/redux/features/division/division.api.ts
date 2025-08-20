@@ -10,6 +10,13 @@ export const divisionApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Division"],
     }),
+    getDivisions: builder.query({
+      query: () => ({
+        url: "/division",
+        method: "GET",
+      }),
+      providesTags: ["Division"],
+    }),
   }),
 });
 
