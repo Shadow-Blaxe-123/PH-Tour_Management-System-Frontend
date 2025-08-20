@@ -17,16 +17,40 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useGetDivisionsQuery } from "@/redux/features/division/division.api";
+import { useGetTourTypesQuery } from "@/redux/features/tour/tour.api";
 import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
+import { Link } from "react-router";
 
 function AddTour() {
+  const { data: tourTypeData, isLoading: tourTypeLoading } =
+    useGetTourTypesQuery(undefined);
+  const { data: divisionData, isLoading: divisionLoading } =
+    useGetDivisionsQuery(undefined);
+  const divisionOptions = divisionData?.data?.map((item: { name: string }) => ({
+    value: item.name,
+    label: item.name,
+  }));
+  const tourTypeOptions = tourTypeData?.data?.map((item: { name: string }) => ({
+    value: item.name,
+    label: item.name,
+  }));
+  console.log(divisionOptions);
+  console.log(tourTypeOptions);
   const form = useForm({
     defaultValues: {
       title: "",
       description: "",
       division: "",
-      tourtype: "",
+      tourType: "",
     },
   });
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -61,15 +85,38 @@ function AddTour() {
               <div className="flex gap-5">
                 <FormField
                   control={form.control}
-                  name="title"
+                  name="division"
                   render={({ field }) => (
                     <FormItem className="flex-1">
-                      <FormLabel>Tour Title</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="text" />
-                      </FormControl>
+                      <FormLabel>Division</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger
+                            className="w-full"
+                            disabled={divisionLoading}
+                          >
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {divisionOptions?.map(
+                            (
+                              item: { value: string; label: string },
+                              index: number
+                            ) => (
+                              <SelectItem value={item.value} key={index}>
+                                {item.label}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
                       <FormDescription className="sr-only">
-                        This is your title.
+                        You can manage email addresses in your{" "}
+                        <Link to="/examples/forms">email settings</Link>.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -77,15 +124,38 @@ function AddTour() {
                 />
                 <FormField
                   control={form.control}
-                  name="title"
+                  name="tourType"
                   render={({ field }) => (
                     <FormItem className="flex-1">
-                      <FormLabel>Tour Title</FormLabel>
-                      <FormControl>
-                        <Input {...field} type="text" />
-                      </FormControl>
+                      <FormLabel>Tour Type</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger
+                            className="w-full"
+                            disabled={tourTypeLoading}
+                          >
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {tourTypeOptions?.map(
+                            (
+                              item: { value: string; label: string },
+                              index: number
+                            ) => (
+                              <SelectItem value={item.value} key={index}>
+                                {item.label}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
                       <FormDescription className="sr-only">
-                        This is your title.
+                        You can manage email addresses in your{" "}
+                        <Link to="/examples/forms">email settings</Link>.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
