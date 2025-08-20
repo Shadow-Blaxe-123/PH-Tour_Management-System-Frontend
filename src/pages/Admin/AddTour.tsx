@@ -38,7 +38,12 @@ import {
   useGetTourTypesQuery,
 } from "@/redux/features/tour/tour.api";
 import { CalendarIcon } from "lucide-react";
-import { useForm, type FieldValues, type SubmitHandler } from "react-hook-form";
+import {
+  useFieldArray,
+  useForm,
+  type FieldValues,
+  type SubmitHandler,
+} from "react-hook-form";
 import { format, formatISO } from "date-fns";
 import MultipleImageUploader from "@/components/MultipleImageUploader";
 import { useState } from "react";
@@ -67,25 +72,32 @@ function AddTour() {
       tourType: "",
       startDate: "",
       endDate: "",
+      included: [{ value: "" }],
     },
   });
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "included",
+  });
+  console.log(fields);
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     const tourData = {
       ...data,
       startDate: formatISO(data.startDate),
       endDate: formatISO(data.endDate),
+      included: data.included.map((item: { value: string }) => item.value),
     };
     const formData = new FormData();
     formData.append("data", JSON.stringify(tourData));
     images.forEach((image) => formData.append("files", image as File));
     console.log(tourData);
     console.log(data);
-    try {
-      const res = await addTour(formData).unwrap();
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
+    // try {
+    //   const res = await addTour(formData).unwrap();
+    //   console.log(res);
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
   return (
     <div className="w-full max-w-4xl mx-auto px-5 mt-16 flex justify-center">
@@ -282,7 +294,7 @@ function AddTour() {
               <div className="flex gap-5 items-stretch">
                 <FormField
                   control={form.control}
-                  name="title"
+                  name="description"
                   render={({ field }) => (
                     <FormItem className="flex-1">
                       <FormLabel>Description</FormLabel>
@@ -299,6 +311,29 @@ function AddTour() {
                 <div className="flex-1 mt-6">
                   <MultipleImageUploader onChange={setImages} />
                 </div>
+              </div>
+              <div className="border-t border-muted-foreground w-full"></div>
+              <div>
+                <Button type="button" onClick={() => append({ value: "" })}>
+                  Add Includes
+                </Button>
+                {fields.map((field, index) => (
+                  <FormField
+                    control={form.control}
+                    name={`included.${index}.value`}
+                    key={field.id}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tour Title</FormLabel>
+                        <FormControl>
+                          <Input {...field} type="text" />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ))}
               </div>
             </form>
           </Form>
